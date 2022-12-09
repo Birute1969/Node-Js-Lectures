@@ -1,6 +1,7 @@
 const cors = require('cors');
 const express = require('express');
 const { default: mongoose } = require('mongoose');
+const { BroadcastChannel } = require('worker_threads');
 const app = express();
 
 app.use(cors());
@@ -36,6 +37,14 @@ const carSchema = new mongoose.Schema({
 });
 const carModel = mongoose.model('cars', carSchema);
 
+//kai dažnai naudojame kelis, juos galime įdėti į kintam1jį ir tą kintamąjį pernaudoti:
+//const defaultSchemaValue = {
+    //required: true,
+    //lowercase: true
+//}
+
+
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -53,9 +62,22 @@ const userSchema = new mongoose.Schema({
 const userModel = mongoose.model('user', userSchema);
 
 app.get('/cars', async(req, res) => {
-    const cars = await carModel.find();
+    const cars = await carModel.find().sort({year: 1});
     //jeigu nori, kad rodytų tik pvz: Audi:
     //const cars = await carModel.find({brand: 'Audi'});
+    console.log(cars);
+    res.send(cars);
+});
+
+//norint filtruoti pagal "brand", rašome dinaminį route:
+app.get('/cars/:brand', async(req, res) => {
+    const brand = req.params.brand;
+    console.log(brand);
+    const cars = await carModel.find(
+        { brand: { 
+            $regex: new RegExp(brand, 'i')
+        }
+    });
     console.log(cars);
     res.send(cars);
 });
@@ -69,9 +91,38 @@ app.post('/cars', async (req, res) => {
 })
 
 app.get('/users', async(req, res) => {
-    const users = await userModel.find();
-    //jeigu norime, kad parodytų "users" su vardu "Birute":
-    //const users = await userModel.find({name: 'Birute'});
+    const { sort} = req.query;
+    
+    let users = await userModel.find();
+    if (sort === 'asc') {
+        users = await userModel.find(). sort({ surname: 1});
+    } else if (sort === 'desc') {
+        users = await userModel.find(). sort({ surname: -1});
+    }
+    console.log(users);
+    res.send(users);
+});
+
+// app.get('/users/asc', async(req, res) => {
+//     const users = await userModel.find().sort({surname: 1});
+//     console.log(users);
+//     res.send(users);
+// });
+
+// app.get('/users/desc', async(req, res) => {
+//     const users = await userModel.find().sort({surname: -1});
+//     console.log(users);
+//     res.send(users);
+// });
+
+app.get('/users/:name', async(req, res) => {
+    const name = req.params.name;
+    console.log(name);
+    const users = await userModel.find(
+        { name: { 
+            $regex: new RegExp(name, 'i')
+        }
+    });
     console.log(users);
     res.send(users);
 });
