@@ -1,0 +1,67 @@
+const carModel = require('./models/car');
+const userModel = require('./models/user');
+
+const express = require('express');
+const router = express.Router();
+
+router.get('/cars', async(req, res) => {
+    const cars = await carModel.find().sort({year: 1});
+    console.log(cars);
+    res.send(cars);
+});
+
+//norint filtruoti pagal "brand", rašome dinaminį route:
+router.get('/cars/:brand', async(req, res) => {
+    const brand = req.params.brand;
+    console.log(brand);
+    const cars = await carModel.find(
+        { brand: { 
+            $regex: new RegExp(brand, 'i')
+        }
+    });
+    console.log(cars);
+    res.send(cars);
+});
+
+router.post('/cars', async (req, res) => {
+    const {brand, model, year, price} = req.body;
+    await carModel.create({brand, model, year, price})
+    const cars = await carModel.find()
+    console.log(cars);
+    res.send(cars);
+})
+
+router.get('/users', async(req, res) => {
+    const { sort} = req.query;
+    
+    let users = await userModel.find();
+    if (sort === 'asc') {
+        users = await userModel.find(). sort({ surname: 1});
+    } else if (sort === 'desc') {
+        users = await userModel.find(). sort({ surname: -1});
+    }
+    console.log(users);
+    res.send(users);
+});
+
+router.get('/users/:name', async(req, res) => {
+    const name = req.params.name;
+    console.log(name);
+    const users = await userModel.find(
+        { name: { 
+            $regex: new RegExp(name, 'i')
+        }
+    });
+    console.log(users);
+    res.send(users);
+});
+
+router.post('/users', async (req, res) => {
+    const { name, surname, role} = req.body;
+    await userModel.create({name, surname, role})
+    const users = await userModel.find()
+    console.log(users);
+    res.send(users);
+})
+
+module.exports = router;
