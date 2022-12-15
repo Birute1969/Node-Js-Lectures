@@ -8,12 +8,14 @@ const editFormOutput = document.getElementById('edit-form-output');
 const editBrandInput = document.getElementById('edit-brand-input');
 const editModelInput = document.getElementById('edit-model-input');
 const editPriceInput = document.getElementById('edit-price-input');
-
+const cancelEditFormButton = document.getElementById('cancel-edit-button');
 
 const USER_ID = '639306bee650a99d1278db9f';
 const BASE_URL = 'http://localhost:3000';
 
 let editAdvertId;
+
+editForm.classList.add('hidden');
 
 editForm.addEventListener('submit', () => {
     const updatedAdvert = {
@@ -50,6 +52,13 @@ form.addEventListener('submit', (event) => {
         },
         body: JSON.stringify(newAdvert)
     });
+});
+
+cancelEditFormButton.addEventListener('click', (req, res) => {
+    editForm.classList.add('hidden');
+    editBrandInput.value = '';
+    editModelInput.value = '';
+    editPriceInput.value = '';
 });
 
 fetch(BASE_URL + '/adverts')
@@ -105,12 +114,3 @@ function createAdvertCard(advert) {
 
     advertsOutput.appendChild(advertCard);
 }
-
-// function createElement(name, attributes) {
-//     const element = document.createElement(name);
-    
-//     attributes.forEach((attr) => {
-//         element.setAttribute(attr[0], attr[1]);
-//     });
-//     return input;
-// }
