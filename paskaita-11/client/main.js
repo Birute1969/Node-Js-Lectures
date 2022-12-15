@@ -4,10 +4,32 @@ const brandInput = document.getElementById('brand');
 const modelInput = document.getElementById('model');
 const priceInput = document.getElementById('price');
 const advertsOutput = document.getElementById('adverts');
+const editFormOutput = document.getElementById('edit-form-output');
+const editBrandInput = document.getElementById('edit-brand-input');
+const editModelInput = document.getElementById('edit-model-input');
+const editPriceInput = document.getElementById('edit-price-input');
 
 
 const USER_ID = '639306bee650a99d1278db9f';
 const BASE_URL = 'http://localhost:3000';
+
+let editAdvertId;
+
+editForm.addEventListener('submit', () => {
+    const updatedAdvert = {
+        brand: editBrandInput.value,
+        model: editModelInput.value,
+        price: editPriceInput.value
+    };
+
+    fetch(BASE_URL + '/adverts/' + editAdvertId, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedAdvert)
+    });
+});
 
 form.addEventListener('submit', (event) => {
     const brand = brandInput.value;
@@ -39,7 +61,7 @@ fetch(BASE_URL + '/adverts')
 function createAdvertCard(advert) {
     const advertCard = document.createElement('div');
     advertCard.classList.add('advert-card');
-
+    
     const advertBrand = document.createElement('h3');
     advertBrand.textContent = advert.brand;
 
@@ -67,6 +89,12 @@ function createAdvertCard(advert) {
 
     editButton.addEventListener('click', () => {
         editForm.classList.remove('hidden');
+        
+        editBrandInput.value = advert.brand;
+        editModelInput.value = advert.model;
+        editPriceInput.value = advert.price;
+
+        editAdvertId = advert._id;
     });
 
     advertCard.appendChild(advertBrand);
@@ -76,4 +104,13 @@ function createAdvertCard(advert) {
     advertCard.appendChild(editButton);
 
     advertsOutput.appendChild(advertCard);
+}
+
+function createElement(name, attributes) {
+    const element = document.createElement(name);
+    
+    attributes.forEach((attr) => {
+        element.setAttribute(attr[0], attr[1]);
+    });
+    return input;
 }
