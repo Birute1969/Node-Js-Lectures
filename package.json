@@ -2,7 +2,7 @@
   "name": "nodejs-paskaitos",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start-1": "nodemon paskaita-1/app.js",
     "start-2": "nodemon paskaita-2/app.js",
@@ -17,7 +17,8 @@
     "start-9": "nodemon paskaita-9/app/app.js",
     "start-11": "nodemon paskaita-11/app/app.js",
     "start-12-1": "nodemon paskaita-12-1/app/app.js",
-    "start-12-2": "nodemon paskaita-12-2/app/app.js"
+    "start-12-2": "nodemon paskaita-12-2/app/app.js",
+    "start-14": "nodemon paskaita-14/app/app.js"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongodb": "^4.12.1",
-    "mongoose": "^6.8.0"
+    "mongoose": "^6.8.0",
+    "mysql2": "^2.3.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
